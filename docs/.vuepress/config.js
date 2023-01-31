@@ -9,7 +9,12 @@ module.exports = config({
     search: true, //是否开启搜索
     // 主题和它的配置
     // theme: '@vuepress/theme-default',
-    plugins: ['autobar','@vuepress/nprogress'],
+    plugins: ['autobar',
+    'sitemap', {
+      hostname: "https://coderclsld.github.io/",
+      // 排除无实际内容的页面
+      exclude: ["/404.html"]
+    }],
     markdown: {
         extendMarkdown: md => {
           md.use(require("markdown-it-disable-url-encode"));

@@ -2036,7 +2036,7 @@
 
 "@vuepress/plugin-blog@^1.9.4":
   "integrity" "sha512-7A4Y3mYrSOUKdzsTjeVOKt0XgZ0m1Iqq7BeZn7y9YeZfDcZ4Fx6UldsPfK2+THwtYwGzQ7Not3zO8djyk7z3ew=="
-  "resolved" "https://registry.npmmirror.com/@vuepress/plugin-blog/-/plugin-blog-1.9.4.tgz"
+  "resolved" "https://registry.npmjs.org/@vuepress/plugin-blog/-/plugin-blog-1.9.4.tgz"
   "version" "1.9.4"
   dependencies:
     "@vssue/api-github-v3" "^1.1.2"
@@ -3260,9 +3260,9 @@
     "lodash.uniq" "^4.5.0"
 
 "caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30001109", "caniuse-lite@^1.0.30001286":
-  "integrity" "sha512-mleTFtFKfykEeW34EyfhGIFjGCqzhh38Y0LhdQ9aWF+HorZTtdgKV/1hEE0NlFkG2ubvisPV6l400tlbPys98A=="
-  "resolved" "https://registry.npmmirror.com/caniuse-lite/-/caniuse-lite-1.0.30001311.tgz"
-  "version" "1.0.30001311"
+  "integrity" "sha512-CPB+UL9XMT/Av+pJxCKGhdx+yg1hzplvFJQlJ2n68PyQGMz9L/E2zCyLdOL8uasbouTUgnPl+y0tccI/se+BEw=="
+  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001449.tgz"
+  "version" "1.0.30001449"
 
 "caseless@~0.12.0":
   "integrity" "sha512-4tYFyifaFfGacoiObjJegolkwSU4xQNGbVgUiNYVUxbQ2x2lUsFvY4hVgVzGiIe6WLOPqycWXA40l+PWsxthUw=="
