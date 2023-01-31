@@ -18,7 +18,7 @@ module.exports = config({
     markdown: {
         extendMarkdown: md => {
           md.use(require("markdown-it-disable-url-encode"));
-        }
+        } 
     },
     themeConfig: {
       // type: "blog", // 类型要选blog
