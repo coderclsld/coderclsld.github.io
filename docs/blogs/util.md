@@ -1,124 +1,69 @@
 ## superUilts
 
-### goland时间戳生成
+### goland时间生成
 
 ```go
-package main
+package crawl
 
 import (
 	"fmt"
+	"testing"
 	"time"
 )
-func main() {
-	var cstSh, _ = time.LoadLocation("Asia/Shanghai") //上海
-	startTime := time.Now().In(cstSh).AddDate(0, 0, -1)
-	//startTime = time.Date(startTime.Year(), startTime.Month(), startTime.Day(), 0, 0, 0, 0, startTime.Location())
-	fmt.Println(startTime)
-	fmt.Println(startTime.Unix())
+
+func TestTime(t *testing.T) {
+	currentTime := time.Now()
+	fmt.Println("获取当前时间 time.Time:", currentTime)
+   //获取当前时间 time.Time: 2023-02-03 10:50:01.3810935 +0800 CST m=+0.002673101
+	
+	timeStemp := time.Now().Unix()
+	fmt.Println("获取当前时间戳:", timeStemp)
+	//获取当前时间戳: 1675392601
     
-    currentTime := time.Now()
-
-     fmt.Println("当前时间  : ", currentTime)
-
-     fmt.Println("当前时间字符串: ", currentTime.String())
-
-     fmt.Println("MM-DD-YYYY : ", currentTime.Format("01-02-2006"))
-
-     fmt.Println("YYYY-MM-DD : ", currentTime.Format("2006-01-02"))
-
-     fmt.Println("YYYY.MM.DD : ", currentTime.Format("2006.01.02 15:04:05"))
-
-     fmt.Println("YYYY#MM#DD {Special Character} : ", currentTime.Format("2006#01#02"))
-
-     fmt.Println("YYYY-MM-DD hh:mm:ss : ", currentTime.Format("2006-01-02 15:04:05"))
-
-     fmt.Println("Time with MicroSeconds: ", currentTime.Format("2006-01-02 15:04:05.000000"))
-
-     fmt.Println("Time with NanoSeconds: ", currentTime.Format("2006-01-02 15:04:05.000000000"))
-
-     fmt.Println("ShortNum Month : ", currentTime.Format("2006-1-02"))
-
-     fmt.Println("LongMonth : ", currentTime.Format("2006-January-02"))
-
-     fmt.Println("ShortMonth : ", currentTime.Format("2006-Jan-02"))
-
-     fmt.Println("ShortYear : ", currentTime.Format("06-Jan-02"))
-
-     fmt.Println("LongWeekDay : ", currentTime.Format("2006-01-02 15:04:05 Monday"))
-
-     fmt.Println("ShortWeek Day : ", currentTime.Format("2006-01-02 Mon"))
-
-     fmt.Println("ShortDay : ", currentTime.Format("Mon 2006-01-2"))
+	timeStr := time.Now().Format("2006-01-02 15:04:05")
+	fmt.Println("获取当前时间的字符串格式:", timeStr)
+	//获取当前时间的字符串格式: 2023-02-03 10:50:01
+    
+	formatTimeStr := time.Unix(123455552, 0).Format("2006-01-02 15:04:05")
+	fmt.Println("时间戳转字符串:", formatTimeStr)
+	//时间戳转字符串: 1973-11-30 05:12:32
+    
+	formatTimeStr = "2017-04-11 13:33:37"
+	//默认的parse是使用+0时区
+	formatTimeParse, _ := time.Parse("2006-01-02 15:04:05", formatTimeStr)
+	fmt.Println("字符串转时间 time.Time:", formatTimeParse)
+   //字符串转时间 time.Time: 2017-04-11 13:33:37 +0000 UTC
+    
+	//使用当前时区格式化时间
+	formatTimeParseInLocation, _ := time.ParseInLocation("2006-01-02 15:04:05", formatTimeStr, time.Local)
+	fmt.Println("使用当前时区格式化时间:", formatTimeParseInLocation)
+	//使用当前时区格式化时间: 2017-04-11 13:33:37 +0800 CST
+    
+	//在上面基础上转时间戳
+	timeStemp = formatTimeParse.Unix()
+	fmt.Println("默认时区字符串转时间戳:", timeStemp)
+	//默认时区字符串转时间戳: 1491917617
+    
+	timeStemp = formatTimeParseInLocation.Unix()
+	fmt.Println("本地时区字符串转时间戳:", timeStemp)
+   //本地时区字符串转时间戳: 1491888817
 }
+
 ```
 
 
 
+### php时间生成
 
+```php
+date("Y-m-d H:i:s"); //获取当前日期格式的字符串 2017-12-14 23:13:51
 
-### 请求截图参数
+time(); //获取当前时间戳
 
-以下参数get、post均可，当get请求是url参数需要进行endecode，防止url参数链接干扰正常的请求访问参数
+date("Y-m-d H:i:s"，1513264258); //获取某个时间戳对应的日期格式的字符串
 
-| 参数         | 解释                                 | 是否必须               |
-| ------------ | ------------------------------------ | ---------------------- |
-| orderid      | 业务传递过来的id                     | yes                    |
-| business     | 业务类型                             | yes                    |
-| redrictURL   | 回调地址                             | yes                    |
-| url          | 截图URL网页                          | yes                    |
-| type         | 截图类型：1为长截图，2为窗口大小截图 | no，默认为窗口大小截图 |
-| scrollHeight | 长截图高度限制，减少截图时间         | no，默认为最大截图高度 |
-
-MD5() -> set集合
-
-存在 返回该任务已存在
-
-不存在 存表并加入list队列
-
-
-
-### 请求截图返回参数
-
-| 参数   | 解释                                                         |      |
-| ------ | ------------------------------------------------------------ | ---- |
-| code   | 200表示调用成功、500表示服务器异常、201表示客户端参数错误    |      |
-| msg    | 表示相应状态的信息，200：调用成功，已加入截图任务队列；500：服务器异常；201：参数错误和详细说明 |      |
-| taskid | 任务id                                                       |      |
-| MD5    | 请求参数的各项MD5加密，需与taskid对应才会返回图片            |      |
-
-
-
-### 回调请求参数
-
-| 参数   | 解释              |      |
-| ------ | ----------------- | ---- |
-| taskid | 任务id            |      |
-| MD5    | 上一步返回的MD5值 |      |
-|        |                   |      |
-
-### 回调返回参数
-
-| 参数     | 解释                                                      |      |
-| -------- | --------------------------------------------------------- | ---- |
-| code     | 200表示任务成功，500表示服务器异常，201表示服务器任务失败 |      |
-| msg      | 对应状态的信息                                            |      |
-| imageURL | 任务成功的图片地址                                        |      |
-
-
-
-### 任务表
-
-| 字段         | 解释                                                         |      |
-| ------------ | ------------------------------------------------------------ | ---- |
-| taskid       | 自增id                                                       |      |
-| orderid      | 业务方提供的id                                               |      |
-| business     | 业务类型                                                     |      |
-| redrictURL   | 回调地址                                                     |      |
-| url          | 访问地址                                                     |      |
-| scrollHeight | 长截图高度限制                                               |      |
-| status       | 状态: 0=>添加任务失败; 1=>添加任务成功; 2=>执行任务中; 3=>任务执行失败; 4=>任务执行成功 |      |
-| iconUrl      | 保存图片地址                                                 |      |
-| md5          | 参数的MD5加密                                                |      |
+strtotime('2017-12-14 23:13:51'); //获取某个日期的时间戳
+```
 
 
 
@@ -131,4 +76,6 @@ mysql -h 127.0.0.1 -u root -p -P 3306
 
 
 /home/app/ll_game_strategy_base/ll_game_strategy_base -logtostderr=true -v=800 /home/app/ll_game_strategy_base/config.ini
+
+
 

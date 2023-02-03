@@ -3,4 +3,5 @@
 '.cache' 
 ".git"
 "public/"
+"docs/blogs/flamingo"
 node_modules
