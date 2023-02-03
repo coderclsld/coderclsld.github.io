@@ -9,7 +9,7 @@ module.exports = config({
     search: true, //是否开启搜索
     // 主题和它的配置
     // theme: '@vuepress/theme-default',
-    plugins: ['autobar'],
+    plugins: [['autobar', {'pinyinNav': true}]],
     markdown: {
         extendMarkdown: md => {
           md.use(require("markdown-it-disable-url-encode"));
