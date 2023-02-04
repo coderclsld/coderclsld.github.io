@@ -4,7 +4,7 @@
 
 ### slice底层结构
 
-![image-20230204150751623](/Users/clsld/Documents/coderclsld.github.io/docs/blogs/goland/goland集合/image-20230204150751623.png)
+![image-20230204164629130](./image-20230204164629130-5500409.png)
 
 ```go
 type slice struct{
