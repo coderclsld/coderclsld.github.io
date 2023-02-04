@@ -67,13 +67,15 @@ strtotime('2017-12-14 23:13:51'); //获取某个日期的时间戳
 
 
 
-## mysql链接命令
+### mysql链接命令
 
 ```shell
 mysql -h 127.0.0.1 -u root -p -P 3306
 ```
 
 
+
+### golang服务启动命令
 
 /home/app/ll_game_strategy_base/ll_game_strategy_base -logtostderr=true -v=800 /home/app/ll_game_strategy_base/config.ini
 

@@ -1,7 +1,10 @@
-## chan数据结构
-- channel内部数据结构是固定长度的双向循环链表
+## channel
+### channel的数据结构
+
+- channel内部数据结构是固定长度的**双向循环链表**
 - 按顺序往里面写数据，写满后又从零开始写
 - chan中的两个重要组件是buf和waitq，所有的行为和实现都是围绕着这两个组件进行的
+
 ```go
 type hchan struct {
   
@@ -31,7 +34,7 @@ type waitq struct {
 
 
 
-## 创建channel
+### 创建channel
 
 创建channel时，可以往channel中放入不同类型的数据，不同数据占用的空间大小也不一样，这决定了hchan和hchan中的buf字段需要开辟多大的存储空间，在go中需要对不同的情况进行处理，包含三种情况
 > 总体原则是:总内存大小 = hchan需要的内存大小 + 元素需要的内存大小
@@ -64,14 +67,14 @@ func makechan(t *chantype,size int) *hchan{
   return c
 }
 ```
-## 发送数据到channel
+### 发送数据到channel
 发送数据到channel，直观的理解就是将数据放到chan的环形队列中，不过go做了一些优化，先判断是否有等待接收数据的groutine，如果有直接将数据发送给groutine，就不放进队列中了。当然还有一种情况就是队列如果满了，那就只能放到队列中等待，知道有数据被取走才发送。
 
 1.如果recvq不为空，从recvq中取出一个等待接收数据的Groutine，将数据发送给Groutine
 2.如果recvq为空，才将数据放入buf中
 3.如果buf已满，则将要发送的数据和当前的Groutine打包成Sudog对象放入sendq，并将groutine设置为等待状态
 
-## 发送数据
+### 发送数据
 ```go
 //ep指向要发送数据的首地址
 func chansend(c *hchan,ep unsafe.Pointer,block bool,callerpc uintptr)bool{
@@ -169,7 +172,7 @@ func send(c *hchan,sg *sudog,ep unsafe.Pointer,unlock func(),skip int){
   goready(gp,skip+1)
 }
 ```
-## 读取数据
+### 读取数据
 从channel读取数据时，不是直接去环形队列中去哪数据，而是先判断是否有等待发送数据的goroutine，如果有直接将groutine出队列，取出数据返回，并唤醒groutine，如果没有等待发送数据的groutine，再从环形队列中取数据。
 
 1、如果有等待发送数据的goroutine，从sendq中取出一个等待发送数据的groutine，取出数据
@@ -236,7 +239,8 @@ func channrecv(c *hchan,ep unsafe.Pointer,block bool)(selected,receive bool){
   return true,!closed
 }
 ```
-关闭channel
+### 关闭channel
+
 ```go
 func closechan(c *hchan){
   if c == nil{

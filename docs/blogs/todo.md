@@ -86,16 +86,16 @@
 
 ### 2023-02-04
 
-- [ ] map相关面试题
-  - [ ] map底层数据结构
-    - [ ] map的查找
-    - [ ] map的扩容
-  - [ ] map的用法
-- [ ] slice相关面试题
-  - [ ] slice底层结构
-    - [ ] 如何扩容
-    - [ ] 如何查找
-  - [ ] slice的用法
+- [x] map相关面试题
+  - [x] map底层数据结构
+    - [x] map的查找
+    - [x] map的扩容
+  - [x] map的用法
+- [x] slice相关面试题
+  - [x] slice底层结构
+    - [x] 如何扩容
+    - [x] 如何查找
+  - [x] slice的用法
 - [ ] channel相关面试题
   - [ ] channel的底层数据结构
   - [ ] 有缓冲channel和无缓冲channel
