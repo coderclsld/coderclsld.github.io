@@ -96,7 +96,7 @@
     - [x] 如何扩容
     - [x] 如何查找
   - [x] slice的用法
-- [ ] channel相关面试题
+- [x] channel相关面试题
   - [ ] channel的底层数据结构
   - [ ] 有缓冲channel和无缓冲channel
   - [ ] 防止channel阻塞、死锁

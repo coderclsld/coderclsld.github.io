@@ -1,16 +1,16 @@
-# select、poll、epoll
+## select、poll、epoll
 
-## 多路复用：
+### 多路复用：
 
 多路指的是多个socket网络连接、复用指的是复用一个线程、多路复用主要有三种技术：select、poll、epoll，epoll
 
 io多路复用是通过一种机制，一个进程可以监视多个描述符，一旦某个描述符就绪，能够通知程序相应的读写操作，但是select、poll、epoll本质上都是同步IO，因为他们都需要在读写事件就绪后自己负责进行读写，也就是说这个读写过程是阻塞的，而异步IO则无需自己负责进行读写，异步IO的实现会负责把数据从内核拷贝到用户空间。
 
-## select
+### select
 
 select函数监视的文件描述符分为三类：分别是writefd、readfd、exceptfd，当用户进程调用select的时候，select会将需要监控的fds集合拷贝到内核空间，然后遍历自己监控的socket,挨个调用检查socket是否有可读事件，遍历完所有的socket后，如果没有任何一个socket可读，那么select会调用schedule_timeout进入schedule循环，然后使process进入睡眠。如果在timeout时间内的某个socket有数据可读了，则调用select的进程会被唤醒，接下来select遍历监控的socket，挨个收集可读事件并返回给用户。
 
-### select存在三个问题：
+#### select存在三个问题：
 
 每次调用select，都需要把被监控的fds集合从用户态空间拷贝到内核态空间，高并发场景下这样的拷贝会消耗很多资源
 
@@ -18,17 +18,17 @@ select函数监视的文件描述符分为三类：分别是writefd、readfd、e
 
 被监控的fds集合中，只要有一个数据可读，整个socket集合就会被遍历一次调用socket的poll函数收集可读事件。
 
-## poll
+### poll
 
 poll的实现和select非常相似，只是描述fd集合的方式不同，针对select的三个问题，poll使用了pollfd结构而不是select的fd_set结构就解决了select的集合大小限制问题，但是poll和select同样存在描述符需要从用户态复制到内核态的过程
 
-## epoll
+### epoll
 
 在linux网络编程中，很长时间都在使用select来做事件触发。epoll相比于select和poll，最大的好处在于他不会随着fd数目的增长而降低效率，在内核中的select实现中，他是采用轮询来处理的，轮询的fd数目越多，耗时越多。
 
 
 
-## 三者之间的区别
+### 三者之间的区别
 
 |            | select                                             | poll                                           | epoll                                                        |
 | ---------- | -------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ |
@@ -40,7 +40,7 @@ poll的实现和select非常相似，只是描述fd集合的方式不同，针�
 
 传统的select/poll的一个致命的弱点就是当你用友一个很大的socket集合，由于网络得延时，使得任一时间只有部分的socket是活跃的，而select/poll每次调用都会线性扫描全部的集合，导致效率呈线性下降。但是epoll就不存在这个问题，它只会对活跃的socket进行操作，这是因为在内核实现中epoll是根据每个fd上面的callback函数实现的，于是，只有活跃的socket才会主动去调用callback函数，其他的idle状态的socket则不会，在这点上，epoll实现了一个伪AIO。
 
-# BIO、NIO、reactor模型
+### BIO、NIO、reactor模型
 
 BIO
 
