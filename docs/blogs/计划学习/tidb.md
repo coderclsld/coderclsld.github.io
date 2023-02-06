@@ -16,3 +16,7 @@ pd server：是整个集群的管理模块，其主要工作有三个，一是�
 
 tikv server：复制存储数据，从外部看tikv是一个分布式的提供事务的key-value存储引擎，存储数据的基本单位是Region，每个region负责存储一个key range（从stratKey到endKey的左闭右开区间）的数据，每个tikv阶段会负责多个region。tikv使用raft协议作复制，保持数据的一致性和容灾。不同节点上的多个Regina构成一个raft group，数据在多个tikv之间负载均衡由pd调度，是以Regina为单位进行调度
 
+
+
+1、
+
