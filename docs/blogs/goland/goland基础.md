@@ -1,4 +1,6 @@
-## 高效字符串拼接
+## goland基础
+
+### 高效字符串拼接
 
 a)原始拼接方式（+=），原生拼接使用+操作符直接对两个字符串进行拼接
 
@@ -65,7 +67,7 @@ func Join(elems []string, sep string)string{
 }
 ```
 
-## Go比较两个字符串切片是否相等
+### Go比较两个字符串切片是否相等
 
 `DeepEqual`
 
@@ -89,7 +91,7 @@ func StringSliceEqualBCE(a,b []string)bool{
 }
 ```
 
-## go格式化打印
+### go格式化打印
 
 通用
 
