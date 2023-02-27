@@ -60,6 +60,8 @@ date("Y-m-d H:i:s"); //获取当前日期格式的字符串 2017-12-14 23:13:51
 
 time(); //获取当前时间戳
 
+date("Y-m-d H:i:s",strtotime("-1 week"));//一周前
+
 date("Y-m-d H:i:s"，1513264258); //获取某个时间戳对应的日期格式的字符串
 
 strtotime('2017-12-14 23:13:51'); //获取某个日期的时间戳
@@ -79,5 +81,15 @@ mysql -h 127.0.0.1 -u root -p -P 3306
 
 /home/app/ll_game_strategy_base/ll_game_strategy_base -logtostderr=true -v=800 /home/app/ll_game_strategy_base/config.ini
 
+
+
+#### redis命令
+
+```shell
+$redis->hIncrBy() hash自增自减函数
+```
+
+1、man后台topic增加上传视频的功能
+2、后端Get topic的时候增加视频封面下发
 
 
