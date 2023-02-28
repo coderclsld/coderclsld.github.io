@@ -123,4 +123,6 @@
 ### 2023-02-26
 
 - [ ] GMP
+  https://blog.csdn.net/xmcy001122/article/details/119392934
 - [ ] slice、map、chan
+- [ ] 

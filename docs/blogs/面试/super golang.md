@@ -1,30 +1,28 @@
 # super goland
 
-map底层数据结构
+
+
+slice和数据的区别？slice的动态扩容说一下
 
 
 
-并发读写怎么解决
+说一下channel的应用场景和原理
 
 
 
-slice底层数据结构
+map的实现原理能简单说一下吗？
 
 
 
-channel底层数据结构
+如何实现线程安全的map?
 
 
 
-go runtime内存模型
+context包有什么作用？
 
 
 
-go gmp原理
-
-
-
-go垃圾回收实现
+go反射有了解吗？说说原理和作用
 
 
 
