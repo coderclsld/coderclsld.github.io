@@ -154,3 +154,235 @@ func main(){
 }
 ```
 
+
+
+
+
+
+
+
+
+
+
+
+
+Go内建的map是不支持并发写操作的，原因是map写操作不是并发安全的，但超时多个Goroutine操作同一个map时，会产生报错：`fatal error: concurrent map writes`
+
+因此官方引入了sync.map来满足并发编程的需求，一般情况下解决并发map的思路就是加一把大锁，或者把一个map分成若干的小map，对key进行hash，只操作相应的小map。前者锁粒度比较大，影响效率，后者实现起来比较复制比较容易出错，而sync.map对map的读写，不需要加锁，并且通过空间换时间的方式，使用read和dirty两个map来进行读写分离，降低锁时间来提高效率。
+
+如何使用
+
+```go
+package main
+import(
+	"fmt"
+	"sync"
+)
+func main(){
+    var m sync.map
+    //写入
+    m.Store("a",18);
+    m.Store("b",20);
+    //读取
+    age,_ := m.Load("a");
+    //遍历
+    m.Range(func(key,value interface{})bool{
+        name := key.(string)
+        age := value.(int)
+        return true
+    })
+   	//删除
+    m.Delete("a")
+   	//读取不存在则写入
+    m.LoadOrStore("c",100);
+}
+```
+
+Map数据结构
+
+```go
+type Map struct{
+    mu Mutex
+    read atomic.Value //readOnly
+    dirty map[interface{}]*entry
+    misses int
+}
+
+// readOnly is an immutable struct stored atomically in the Map.read field.
+type readOnly struct{
+    m map[interface{}]*entry
+    // true if the dirty map contains some key not in m
+    amended bool	
+}
+
+type entry struct{
+    // *interface{}
+    p unsafe.Pointer
+}
+```
+
+> - mu：互斥锁，用于保护read和dirty
+> - read：只读数据，支持并发读取（atomic.Value类型）。如果涉及到更新操作，则只需要加锁保证数据安全，read实际存储的是readOnly结构体，内存也是一个原生的map，amended属于用于标记read和dirty的数据是否一致
+> - dirty：读写数据，是一个原生map，也是非线性安全。操作dirty需要加锁来保证数据安全
+> - misses：统计有多少次读取read没有命中，每次read中读取失败后，misses的计数值都会加1
+> - 在read和dirty中，都有涉及到entry结构体，其中包含一个指针，用于指向用户存储的元素（key）所指向的value值，read和dirty各自维护一套key，key指向的都是同一个value，也就是说，只要修改了这个entry，对read和dirty都是可见的。
+
+这个entry指针的状态有三种：nil、expunged、正常。
+
+​	当 `p == nil` 时，说明这个键值对已被删除，并且 m.dirty == nil，或 m.dirty[k] 指向该 entry。
+
+​	当 `p == expunged` 时，说明这条键值对已被删除，并且 m.dirty != nil，且 m.dirty 中没有这个 key。
+
+​	p 指向一个正常的值，表示实际 `interface{}` 的地址，并且被记录在 m.read.m[key] 中。如果这时 m.dirty 不为 nil，那么它也被记录在 m.dirty[key] 中。两者实际上指向的是同一个值。
+
+
+
+#### 查找过程：
+
+当我们从sync.Map类型中读取数据时，其会先查看read中是否包含所需的元素
+
+- 若有，则通过atomic原子操作读取数据并返回
+- 若无，这会判断read.readOnly中的amended属性，它会告诉dirty是否包含read.readOnly.m中没有的数据；若amended为true就会到dirty中查找数据
+
+sync.Map的读性能之所以如此之高的原因就在于存在read这一巧妙的设计，作为一个缓存层，提供了快路劲的查找。同时结合amended属性，解决了每次读取都设计锁的问题，实现读这一个使用场景的高性能。
+
+##### load:
+
+```go
+func (m *Map) Load(key interface{}) (value interface{}, ok bool) {
+    read, _ := m.read.Load().(readOnly)
+    e, ok := read.m[key]
+    // 如果没在read中找到,并且amended为true,即dirty中存在read中没有的key
+    if !ok && read.amended {
+        m.mu.Lock() //dirty map不是线程安全的,所以需要加上互斥锁
+        //double check,避免在上锁的过程中dirty map提升为read map。
+        read, _ = m.read.Load().(readOnly)
+        e, ok = read.m[key]
+        //仍然没有在read中找到这个key,并且amended为true
+        if !ok && read.amended {
+            e, ok = m.dirty[key] //从dirty中找
+            //不管dirty中有没有找到,都要"记一笔",因为在dirty提升为read之前,都会进入这条路径
+            m.missLocked()
+        }
+        m.mu.Unlock()
+    }
+    if !ok { //如果没找到,返回空,false
+        return nil, false
+    }
+    return e.load()
+}
+
+func (m *Map) missLocked() {
+    m.misses++
+    if m.misses < len(m.dirty) {
+        return
+    }
+    // dirty map 晋升
+    m.read.Store(readOnly{m: m.dirty})
+    m.dirty = nil
+    m.misses = 0
+}
+
+//entry 的 load 
+func (e *entry) load() (value interface{}, ok bool) {
+    p := atomic.LoadPointer(&e.p)
+    if p == nil || p == expunged {
+        return nil, false
+    }
+    return *(*interface{})(p), true
+}
+```
+
+
+
+#### 写入过程：
+
+即sync.Map的Store方法，该方法的作用是新增或者更新一个元素
+
+##### stroe:
+
+```go
+// Store sets the value for a key.
+func (m *Map) Store(key, value interface{}) {
+    // 如果read map中存在该key则尝试直接更改(由于修改的是entry内部的pointer,因此dirty map也可见)
+    read, _ := m.read.Load().(readOnly)
+    if e, ok := read.m[key]; ok && e.tryStore(&value) {
+        return
+   	 }
+    m.mu.Lock()
+    read, _ = m.read.Load().(readOnly)
+    if e, ok := read.m[key]; ok {
+        if e.unexpungeLocked() {
+            //如果read map中存在该key,但p==expunged,则说明m.dirty!= nil并且m.dirty中不存在该key值，此时:
+            //a. 将 p 的状态由 expunged  更改为 nil ; 
+            //b. dirty map 插入 key;
+            m.dirty[key] = e
+        }
+        //更新entry.p = value(read map和dirty map指向同一个entry)
+        e.storeLocked(&value)
+    } else if e, ok := m.dirty[key]; ok {
+        //如果read map中不存在该key但dirty map中存在该key,直接写入更新 entry(read map中仍然没有这个key)
+        e.storeLocked(&value)
+    } else {
+        //如果read map和dirty map中都不存在该key,则：
+        //a. 如果dirty map为空,则需要创建dirty map,并从read map中拷贝未删除的元素到新创建的dirty map
+        //b. 更新amended字段,标识dirty map中存在read map中没有的key
+        //c. 将kv写入dirty map中,read不变
+        if !read.amended {
+            // 到这里就意味着，当前的 key 是第一次被加到 dirty map 中。
+            // store 之前先判断一下 dirty map 是否为空，如果为空，就把 read map 浅拷贝一次。
+            m.dirtyLocked()
+            m.read.Store(readOnly{m: read.m, amended: true})
+        }
+        // 写入新 key，在 dirty 中存储 value
+        m.dirty[key] = newEntry(value)
+    }
+    m.mu.Unlock()
+}
+
+// unexpungeLocked 函数确保了 entry 没有被标记成已被清除
+// 如果 entry 先前被清除过了，那么在 mutex 解锁之前，它一定要被加入到 dirty map 中
+func (e *entry) unexpungeLocked() (wasExpunged bool) {
+    return atomic.CompareAndSwapPointer(&e.p, expunged, nil)
+}
+```
+
+##### 流程：
+
+> 1. 调用 `Load` 方法检查 `m.read` 中是否存在这个元素。若存在，且没有被标记为删除状态，则尝试存储
+> 2. 若该元素不存在或已经被标记为删除状态，直接调用了 `Lock` 方法**上互斥锁**，保证数据安全。
+>    - 如果read中存在该key，但已经被标记为已删除(expunged)，则说明 dirty 不等于nil(dirty中肯定不存在该元素)，将元素状态从已删除(expunged)更改为nil,将元素插入dirty中
+>    - 若发现read中不存在该元素，但dirty中存在该元素，则直接写入更新entry的指向
+>    - 若发现 read 和 dirty 都不存在该元素，则从 read 中复制未被标记删除的数据，并向 dirty 中插入该元素，赋予元素值 entry 的指向
+
+为什么写入性能差，原因：
+
+1. 写入时一定要经过read，多了一层查询，后续还要查询数据情况和状态，性能开销比较大
+2. 第三个逻辑处理分支，当初始化或者dirty被提升后，会从read中复制全量的数据，若read中数据量大，则会影响性能
+
+
+
+#### 删除过程：
+
+1. 删除依旧得先到read检查元素是否存在，若存在则调用delete标记为expunged（删除状态），非常高效。可以明确read中的元素被删除，性能是非常好的。
+2. 若不存在，根据amended的值是否为true，判断read与dirty是否不一致，不一致则需要走dirty流程，上互斥锁。
+3. 调用delete方法从dirty中标记该元素被删除
+
+```go
+func (e *entry) delete() (value interface{}, ok bool) {
+ for {
+  p := atomic.LoadPointer(&e.p)
+  if p == nil || p == expunged {
+   return nil, false
+  }
+  if atomic.CompareAndSwapPointer(&e.p, p, nil) {
+   return *(*interface{})(p), true
+  }
+ }
+}
+```
+
+delete方法是将entry.p置为nil,并且标记为expunged（删除状态），而不是真真正正的删除
+
+
+
