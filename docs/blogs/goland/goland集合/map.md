@@ -156,21 +156,13 @@ func main(){
 
 
 
-
-
-
-
-
-
-
-
-
+### sync.map
 
 Go内建的map是不支持并发写操作的，原因是map写操作不是并发安全的，但超时多个Goroutine操作同一个map时，会产生报错：`fatal error: concurrent map writes`
 
-因此官方引入了sync.map来满足并发编程的需求，一般情况下解决并发map的思路就是加一把大锁，或者把一个map分成若干的小map，对key进行hash，只操作相应的小map。前者锁粒度比较大，影响效率，后者实现起来比较复制比较容易出错，而sync.map对map的读写，不需要加锁，并且通过空间换时间的方式，使用read和dirty两个map来进行读写分离，降低锁时间来提高效率。
+​		因此官方引入了sync.map来满足并发编程的需求，一般情况下解决并发map的思路就是加一把大锁，或者把一个map分成若干的小map，对key进行hash，只操作相应的小map。前者锁粒度比较大，影响效率，后者实现起来比较复制比较容易出错，而sync.map对map的读写，不需要加锁，并且通过空间换时间的方式，使用read和dirty两个map来进行读写分离，降低锁时间来提高效率。
 
-如何使用
+#### 如何使用
 
 ```go
 package main
@@ -198,7 +190,7 @@ func main(){
 }
 ```
 
-Map数据结构
+#### Map数据结构
 
 ```go
 type Map struct{
@@ -383,6 +375,12 @@ func (e *entry) delete() (value interface{}, ok bool) {
 ```
 
 delete方法是将entry.p置为nil,并且标记为expunged（删除状态），而不是真真正正的删除
+
+
+
+#### 分段锁实现
+
+
 
 
 
