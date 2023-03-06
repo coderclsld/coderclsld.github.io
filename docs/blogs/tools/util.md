@@ -92,4 +92,11 @@ $redis->hIncrBy() hash自增自减函数
 1、man后台topic增加上传视频的功能
 2、后端Get topic的时候增加视频封面下发
 
+#### git push失败
+
+```shell
+#取消代理
+git config --global --unset http.proxy
+git config --global --unset https.proxy
+```
 
