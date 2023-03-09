@@ -1,6 +1,8 @@
 ## superUilts
 
-### goland时间生成
+### Go
+
+#### go时间生成
 
 ```go
 package crawl
@@ -51,9 +53,33 @@ func TestTime(t *testing.T) {
 
 ```
 
+#### go服务启动命令
+
+```shell
+/home/app/ll_game_strategy_base/ll_game_strategy_base -logtostderr=true -v=800 /home/app/ll_game_strategy_base/config.ini
+```
+
+#### go字符串和数字相互转换
+
+```go
+import(
+	"strconv"
+)
+//string转int
+int,err := strconv.Atoi(string)
+//string转int 64
+int64,err := strconv.ParseInt(string,10,64)
+//int转string
+string := strconv.Itoa(int)
+//int64转string
+string := strconv.FormatInt(int64,10)
+```
 
 
-### php时间生成
+
+### php
+
+#### php时间生成
 
 ```php
 date("Y-m-d H:i:s"); //获取当前日期格式的字符串 2017-12-14 23:13:51
@@ -69,7 +95,9 @@ strtotime('2017-12-14 23:13:51'); //获取某个日期的时间戳
 
 
 
-### mysql链接命令
+### mysql
+
+#### mysql链接命令
 
 ```shell
 mysql -h 127.0.0.1 -u root -p -P 3306
@@ -77,20 +105,19 @@ mysql -h 127.0.0.1 -u root -p -P 3306
 
 
 
-### golang服务启动命令
-
-/home/app/ll_game_strategy_base/ll_game_strategy_base -logtostderr=true -v=800 /home/app/ll_game_strategy_base/config.ini
 
 
 
-#### redis命令
+
+### Redis命令
 
 ```shell
 $redis->hIncrBy() hash自增自减函数
 ```
 
-1、man后台topic增加上传视频的功能
-2、后端Get topic的时候增加视频封面下发
+
+
+### Git
 
 #### git push失败
 
@@ -98,5 +125,14 @@ $redis->hIncrBy() hash自增自减函数
 #取消代理
 git config --global --unset http.proxy
 git config --global --unset https.proxy
+```
+
+
+
+### vim
+
+```shell
+#当用vim打开文件的时候没有sudo保存报只读无法修改错误，可以使用以下命令切换sudo保存
+:w !sudo tee %
 ```
 
