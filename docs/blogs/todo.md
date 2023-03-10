@@ -159,8 +159,71 @@ kafka如何保证消息有序
 
 goroutine控制打印
 
-
-
 leetcode做一下
+
+### 2023-3-9
+- [x] golang二叉树
+
+
+runtime里面的方法
+> runtime.NumCPU()：返回当前系统的CPU核数量
+> runtime.GOMAXPROCS()：应用程序可以在运行期间设置运行时系统中得P最大数量
+> runtime.Gosched()：让当前线程让出CPU以让其他线程运行，他不会挂起当前现场，因为当前线程未来会继续执行
+> runtime.Goexit():退出当前goroutine（但是defer语句会照常执行）
+> runtime.NumGoroutine()：返回当前正在执行和排队的任务总数
+> runtime.GOOS():目标操作系统
+> runtime.GC()：会让系统进行一次强制性的垃圾回收
+> runtime.GOROOT():获取goroot目录
+
+一个update语句的执行过程
+
+> 连接器(鉴权)
+> 查询缓存(update的时候将相应的缓存置为失效)
+> 分析器(分析语法)
+> 优化器(确定执行方案，根据优化算法选择走不走索引)
+> 执行器(确定有没有权限，没有就会返回权限错误，有就调用引擎提供的接口，返回结果)
+
+
+
+linux查看磁盘io内存情况
+
+> ps
+>
+> pid	运行着的命令经常编号
+>
+> tty	命令运行的位置
+>
+> time	运行该命令所占用的CPU处理时间
+>
+> cmd	该进程所运行的命令
+>
+> ps -aux，a表示all，x参数表示会显示没有控制终端的进程，u表示展示进程的所有者
+>
+> ps -aux --sort -pcpu，根据CPU使用来升序排序
+>
+> ps -aux --sort -pmem，根据内存使用来升序排序
+>
+> ps -axjf 树形结构显示进程也可以使用pstree命令
+
+
+
+go性能分析工具
+
+> pprof
+>
+> pprof可以查看程序的调用图
+>
+> runtme/pprof
+>
+> net/http/pprof
+>
+> go-torch
+>
+> 可以生成火焰图
+>
+> GOM
+>
+> Debug charts
+
 
 
