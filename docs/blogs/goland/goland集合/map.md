@@ -381,6 +381,43 @@ delete方法是将entry.p置为nil,并且标记为expunged（删除状态），�
 #### 分段锁实现
 
 
+#### map实现set
+
+```go
+type Set struct{
+    map map[string]struct{}
+    lock sync.Mutex
+}
+
+
+func (set *Set)add(key string) bool{
+    set.lock.Lock()
+    if _,ok := set.map[key];ok{//存在
+        return false
+    }else{//不存在
+        set.map[key] = struct{}
+    }
+    defer set.lock.unLock()
+}
+
+
+func (set *Set)isHas()bool{
+    if _,ok := set.map[key];!ok{
+        return false
+    }
+    return true
+}
+
+func (set *Set)del(key string)bool{
+    if _,ok := set.map[key];!ok{
+        return false
+    }else{
+        delete(set.map[key],key)
+        return true
+    }
+}
+
+```
 
 
 
