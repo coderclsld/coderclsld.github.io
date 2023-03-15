@@ -18,6 +18,7 @@ range在遍历前是先将切片的值copy出一份进行遍历，所以在range
 map
 
 map的底层数据结构是怎么样子的？怎么进行查找和扩容操作？
+map中他的底层是hmap，hmap中维护着若干个bucket数组，bucket数组中每个元素都是bmap结构 
 
 
 
