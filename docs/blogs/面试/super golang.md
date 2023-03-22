@@ -129,17 +129,19 @@ web程序可以在代码上加入net/http/pprof 包，开启端口访问，访�
 
 
 #### go反射有了解吗？说说原理和作用
-
+反射是一种机制可以让我们在程序运行时访问、检测和修改对象本身状态或行为的一种能力，从一个变量推断出器类型信息、以及存储的数据的一些信息，又或者是获取一个对象有什么方法可以调用等。
 
 
 
 #### 线上有没有死锁的问题，怎么排查MySQL死锁的问题
-
-
-
-
-
-
-
-
-
+发现死锁异常后，我们可以直接使用`show engine innodb status`命令获取死锁信息，但是该命令只能获取最近一次的死锁信息。所以我们可以通过开启innodb的监控机制来获取实时的死锁信息，它会周期性打印innodb的运行状态到mysqld服务的错误日志中。
+```shell
+set GLOBAL innodb_status_output = ON;
+set GLOBAL innodb_status_output = OFF;
+set GLOBAL innodb_status_output_locks = ON;
+set GLOBAL innodb_status_output_locks = OFF;
+```
+另外MySQL还提供了一个系统参数`innodb_print_all_deadlocks`专门记录死锁日志，当发生死锁时，死锁日志会记录到MySQL的错误日志文件中。
+```shell
+set GLOBAL innodb_print_all_deadlocks = ON;
+```
