@@ -64,17 +64,11 @@ sync.RWMutex的锁适合读多写少的场景，因为读锁可以多重加锁�
 sync.map对map进行读时不需要加锁，使用read和dirty两个map来进行读写分离，read和dirty都指向同一个底层的map。read相当于一个缓存层，提供了快速查找map的结构，查找过程是如果read中存在则返回，若没有则判断amended属性，判断dirty是否包含read没有的数据，若amended就去dirty中查找
 
 
-#### channel发送数据和读取数据的流程
-
-#### channel的底层数据结构是什么样的
-
 #### channel的底层数据结构是怎样的
 channel用一个环形队列buf缓存收到的消息，分别用两个waitq类型的双向列表recvq和sendq存储当缓冲区已满时接收端和发送端的goroutine信息，用来记录buf循环链表当前发送和接收数据的下标sendx和recvx。在创建channel时可以选择不带缓冲和带缓冲，如果不带缓冲就只给hchan本身分配内存；如果带缓冲且不包括指针类型，就给hchan和环形队列缓存buf分配一段连续的空间；如果带缓冲且包含指针类型，就给hchan和环形队列缓存buf分别分配内存空间。
 
 #### channel的底层数据结构是怎样的
 channel用一个环形队列buf缓存收到的消息，分别用两个waitq类型的双向列表recvq和sendq存储当缓冲区已满时接收端和发送端的goroutine信息，用来记录buf循环链表当前发送和接收数据的下标sendx和recvx。在创建channel时可以选择不带缓冲和带缓冲，如果不带缓冲就只给hchan本身分配内存；如果带缓冲且不包括指针类型，就给hchan和环形队列缓存buf分配一段连续的空间；如果带缓冲且包含指针类型，就给hchan和环形队列缓存buf分别分配内存空间。
-
-#### channel发送数据和读取数据的流程
 
 #### channel如何进行发送和接收
 发送数据
