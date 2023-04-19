@@ -44,7 +44,31 @@
 
  <img src="简历头像.jpg" alt="简历头像" style="zoom:20%;margin:10px;float: inline-start" /> 
 
+## 开头
+It's my pleasure,thank you so much for meeting with me !
 
+## 自我介绍
+I am Chen Lin. I got my undergraduate degree in Guangzhou Institute of Software. My major is communication engineering.
+
+## 个人经历
+In my sophomore year, I interned at a startup company, and in my senior year, I worked as an intern as a development engineer in Huya Live. Then I joined my current company while recruiting(recoolting) on campus,which I have now left.
+
+That's my self introduction,thank you !
+
+## 听不懂
+Can you repeat the question
+
+## 优点
+My advantage is that I do things with a plan. I will make a todo list of things I want todo every day. This is also my way to learn new knowledge in depth
+
+## 缺点
+My weakness is that I am not confident enough and I will not show my good parts. But gradually I also changed myself, from sharing some work experience in meetings, to breaking my own English deficiency for the company I wanted to work for.
+
+## 离职原因
+Companies lay off employees for business reasons, not personal reasons
+
+## 未来打算
+I want to be a senior development engineer and take charge of key technology development in the company, which will make me feel fulfilled
 
 
 

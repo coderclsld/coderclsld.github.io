@@ -8,7 +8,7 @@ new和make都是用来内存分配的，且都在堆上分配内存。make用来
 
 
 
-### slice和数据的区别
+### slice和数组的区别
 
 数组的长度是固定的，slice的长度是可以动态调整的。数组在创建的时候需要固定长度，而slice则不需要。slice的底层也是数组实现的，slice是通过一个结构体，结构体中有cap字段（表示切片容量）、len字段（表示切片长度）和array字段（是一个指针指向底层的数组地址）。
 
@@ -155,3 +155,5 @@ set GLOBAL innodb_status_output_locks = OFF;
 ```shell
 set GLOBAL innodb_print_all_deadlocks = ON;
 ```
+
+### 讲一下raft算法(zab、paxos、gossip)  
