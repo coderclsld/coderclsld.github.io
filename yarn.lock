@@ -146,7 +146,7 @@
   "resolved" "https://registry.npmmirror.com/@babel/compat-data/-/compat-data-7.17.0.tgz"
   "version" "7.17.0"
 
-"@babel/core@*", "@babel/core@^7.0.0", "@babel/core@^7.0.0-0", "@babel/core@^7.11.0", "@babel/core@^7.11.1", "@babel/core@^7.12.0", "@babel/core@^7.13.0", "@babel/core@^7.4.0-0", "@babel/core@^7.8.4":
+"@babel/core@*", "@babel/core@^7.0.0", "@babel/core@^7.0.0-0", "@babel/core@^7.11.1", "@babel/core@^7.12.0", "@babel/core@^7.13.0", "@babel/core@^7.4.0-0", "@babel/core@^7.8.4":
   "integrity" "sha512-R3VH5G42VSDolRHyUO4V2cfag8WHcZyxdq5Z/m8Xyb92lW/Erm/6kM+XtRFGf3Mulre3mveni2NHfEUws8wSvw=="
   "resolved" "https://registry.npmmirror.com/@babel/core/-/core-7.17.2.tgz"
   "version" "7.17.2"
@@ -3733,7 +3733,7 @@
     "browserslist" "^4.19.1"
     "semver" "7.0.0"
 
-"core-js@^3.6.4", "core-js@^3.6.5":
+"core-js@^3", "core-js@^3.6.4":
   "integrity" "sha512-YUdI3fFu4TF/2WykQ2xzSiTQdldLB4KVuL9WeAy5XONZYt5Cun/fpQvctoKbCgvPhmzADeesTk/j2Rdx77AcKQ=="
   "resolved" "https://registry.npmmirror.com/core-js/-/core-js-3.21.0.tgz"
   "version" "3.21.0"
